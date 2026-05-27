@@ -1,65 +1,278 @@
-import Image from "next/image";
+// "use client"
 
-export default function Home() {
+// import { useState, Fragment } from "react";
+// import { useChat } from "@ai-sdk/react";
+// import {
+//   PromptInput,
+//   PromptInputBody,
+//   PromptInputButton,
+//   type PromptInputMessage,
+//   PromptInputSubmit,
+//   PromptInputTextarea,
+//   // PromptInputToolbar,
+//   PromptInputTools,
+// } from "@/components/ai-elements/prompt-input";
+// // import { Response } from "@/components/ai-elements/response";
+// import { Message, MessageContent } from "@/components/ai-elements/message";
+// import {
+//   Conversation,
+//   ConversationContent,
+//   ConversationScrollButton,
+// } from "@/components/ai-elements/conversation";
+// import { Loader } from "lucide-react";
+// // import { Loader } from "@components/ai-elements/loader";
+
+// export default function RAGChatBot() {
+
+//   const [input, setInput] = useState("")
+//   const{ messages, sendMessage, status } = useChat()
+
+//   const handleSubmit = (message: PromptInputMessage) => {
+//     if (!message.text) return;
+//     sendMessage({ text: message.text });
+//     setInput("");
+//   };
+
+
+
+  
+//   return (
+//     <div className="max-w-4xl mx-auto p-6 relative size-full h-[calc(100vh-800px)]">
+//       <div className="flex flex-col h-full">
+//         <Conversation className="h-full">
+//           <ConversationContent>
+//             {
+//               messages.map((message) => (
+//                 <div key={message.id}>
+//                   {message.parts.map((part, i) => {
+//                     switch(part.type) {
+//                       case "text":
+//                         return (
+//                           <Fragment key={`${message.id}-${i}`}>
+//                             <Message from={message.role}>
+//                               <MessageContent>
+//                                 <Response>
+//                                   {part.text}
+//                                 </Response>
+//                               </MessageContent>
+//                             </Message>
+//                         </Fragment>
+//                         );
+
+//                       default:
+//                         return null;
+//                     }
+//                   })}
+//                 </div>
+//               ))
+//             }
+//             {(status === "submitted" || status === "streaming") && <Loader />}
+//           </ConversationContent>
+//           <ConversationScrollButton />
+//         </Conversation>
+
+//         <PromptInput onSubmit={handleSubmit} className="mt-4">
+//           <PromptInputBody>
+//             <PromptInputTextarea value={input} onChange={(e) => setInput(e.target.value)} />
+//           </PromptInputBody>
+//           <PromptInputTools>
+//             {/* Moddel selector, web search etc */}
+//           </PromptInputTools>
+//           <PromptInputSubmit />
+//         </PromptInput>
+
+
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
+"use client";
+
+import {
+  Attachment,
+  AttachmentPreview,
+  AttachmentRemove,
+  Attachments,
+} from "@/components/ai-elements/attachments";
+import {
+  PromptInput,
+  PromptInputActionAddAttachments,
+  PromptInputActionAddScreenshot,
+  PromptInputActionMenu,
+  PromptInputActionMenuContent,
+  PromptInputActionMenuTrigger,
+  PromptInputBody,
+  PromptInputButton,
+  PromptInputHeader,
+  type PromptInputMessage,
+  PromptInputSelect,
+  PromptInputSelectContent,
+  PromptInputSelectItem,
+  PromptInputSelectTrigger,
+  PromptInputSelectValue,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputFooter,
+  PromptInputTools,
+  usePromptInputAttachments,
+} from "@/components/ai-elements/prompt-input";
+import { GlobeIcon } from "lucide-react";
+import { useState } from "react";
+import { useChat } from "@ai-sdk/react";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "@/components/ai-elements/message";
+
+const PromptInputAttachmentsDisplay = () => {
+  const attachments = usePromptInputAttachments();
+
+  if (attachments.files.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <Attachments variant="inline">
+      {attachments.files.map((attachment) => (
+        <Attachment
+          data={attachment}
+          key={attachment.id}
+          onRemove={() => attachments.remove(attachment.id)}
+        >
+          <AttachmentPreview />
+          <AttachmentRemove />
+        </Attachment>
+      ))}
+    </Attachments>
+  );
+};
+
+const models = [
+  { id: "gpt-4o", name: "GPT-4o" }
+];
+
+const InputDemo = () => {
+  const [text, setText] = useState<string>("");
+  const [model, setModel] = useState<string>(models[0].id);
+  const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
+
+  const { messages, status, sendMessage } = useChat();
+
+  const handleSubmit = (message: PromptInputMessage) => {
+    const hasText = Boolean(message.text);
+    const hasAttachments = Boolean(message.files?.length);
+
+    if (!(hasText || hasAttachments)) {
+      return;
+    }
+
+    sendMessage(
+      {
+        text: message.text || "Sent with attachments",
+        files: message.files,
+      },
+      {
+        body: {
+          model: model,
+          webSearch: useWebSearch,
+        },
+      }
+    );
+    setText("");
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 relative size-full rounded-lg h-[calc(100vh-80px)]">
+      <div className="flex flex-col h-full">
+        <Conversation>
+          <ConversationContent>
+            {messages.map((message) => (
+              <Message from={message.role} key={message.id}>
+                <MessageContent>
+                  {message.parts.map((part, i) => {
+                    switch (part.type) {
+                      case "text":
+                        return (
+                          <MessageResponse key={`${message.id}-${i}`}>
+                            {part.text}
+                          </MessageResponse>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                </MessageContent>
+              </Message>
+            ))}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+
+        <PromptInput
+          onSubmit={handleSubmit}
+          className="mt-4"
+          globalDrop
+          multiple
+        >
+          <PromptInputHeader>
+            <PromptInputAttachmentsDisplay />
+          </PromptInputHeader>
+          <PromptInputBody>
+            <PromptInputTextarea
+              onChange={(e) => setText(e.target.value)}
+              value={text}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </PromptInputBody>
+          <PromptInputFooter>
+            <PromptInputTools>
+              <PromptInputActionMenu>
+                <PromptInputActionMenuTrigger />
+                <PromptInputActionMenuContent>
+                  <PromptInputActionAddAttachments />
+                  {/* <PromptInputActionAddScreenshot /> */}
+                </PromptInputActionMenuContent>
+              </PromptInputActionMenu>
+              {/* <PromptInputButton
+                onClick={() => setUseWebSearch(!useWebSearch)}
+                tooltip={{ content: "Search the web", shortcut: "⌘K" }}
+                variant={useWebSearch ? "default" : "ghost"}
+              >
+                <GlobeIcon size={16} />
+                <span>Search</span>
+              </PromptInputButton> */}
+              <PromptInputSelect
+                onValueChange={(value) => {
+                  setModel(value);
+                }}
+                value={model}
+              >
+                <PromptInputSelectTrigger>
+                  <PromptInputSelectValue />
+                </PromptInputSelectTrigger>
+                <PromptInputSelectContent>
+                  {models.map((model) => (
+                    <PromptInputSelectItem key={model.id} value={model.id}>
+                      {model.name}
+                    </PromptInputSelectItem>
+                  ))}
+                </PromptInputSelectContent>
+              </PromptInputSelect>
+            </PromptInputTools>
+            <PromptInputSubmit disabled={!text && !status} status={status} />
+          </PromptInputFooter>
+        </PromptInput>
+      </div>
     </div>
   );
-}
+};
+
+export default InputDemo;
