@@ -1,95 +1,5 @@
-// "use client"
-
-// import { useState, Fragment } from "react";
-// import { useChat } from "@ai-sdk/react";
-// import {
-//   PromptInput,
-//   PromptInputBody,
-//   PromptInputButton,
-//   type PromptInputMessage,
-//   PromptInputSubmit,
-//   PromptInputTextarea,
-//   // PromptInputToolbar,
-//   PromptInputTools,
-// } from "@/components/ai-elements/prompt-input";
-// // import { Response } from "@/components/ai-elements/response";
-// import { Message, MessageContent } from "@/components/ai-elements/message";
-// import {
-//   Conversation,
-//   ConversationContent,
-//   ConversationScrollButton,
-// } from "@/components/ai-elements/conversation";
-// import { Loader } from "lucide-react";
-// // import { Loader } from "@components/ai-elements/loader";
-
-// export default function RAGChatBot() {
-
-//   const [input, setInput] = useState("")
-//   const{ messages, sendMessage, status } = useChat()
-
-//   const handleSubmit = (message: PromptInputMessage) => {
-//     if (!message.text) return;
-//     sendMessage({ text: message.text });
-//     setInput("");
-//   };
-
-
-
-  
-//   return (
-//     <div className="max-w-4xl mx-auto p-6 relative size-full h-[calc(100vh-800px)]">
-//       <div className="flex flex-col h-full">
-//         <Conversation className="h-full">
-//           <ConversationContent>
-//             {
-//               messages.map((message) => (
-//                 <div key={message.id}>
-//                   {message.parts.map((part, i) => {
-//                     switch(part.type) {
-//                       case "text":
-//                         return (
-//                           <Fragment key={`${message.id}-${i}`}>
-//                             <Message from={message.role}>
-//                               <MessageContent>
-//                                 <Response>
-//                                   {part.text}
-//                                 </Response>
-//                               </MessageContent>
-//                             </Message>
-//                         </Fragment>
-//                         );
-
-//                       default:
-//                         return null;
-//                     }
-//                   })}
-//                 </div>
-//               ))
-//             }
-//             {(status === "submitted" || status === "streaming") && <Loader />}
-//           </ConversationContent>
-//           <ConversationScrollButton />
-//         </Conversation>
-
-//         <PromptInput onSubmit={handleSubmit} className="mt-4">
-//           <PromptInputBody>
-//             <PromptInputTextarea value={input} onChange={(e) => setInput(e.target.value)} />
-//           </PromptInputBody>
-//           <PromptInputTools>
-//             {/* Moddel selector, web search etc */}
-//           </PromptInputTools>
-//           <PromptInputSubmit />
-//         </PromptInput>
-
-
-//       </div>
-//     </div>
-//   )
-// }
-
-
-
 "use client";
+// "use server";
 
 import {
   Attachment,
@@ -132,6 +42,18 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
+import PDFUpload from "./upload/page";
+
+
+//
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Card, CardContent } from "@/components/ui/card";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { Loader2 } from "lucide-react";
+// import { processPdfFile } from "./upload/actions";
+
+
 
 const PromptInputAttachmentsDisplay = () => {
   const attachments = usePromptInputAttachments();
@@ -159,6 +81,50 @@ const PromptInputAttachmentsDisplay = () => {
 const models = [
   { id: "gpt-4o", name: "GPT-4o" }
 ];
+
+//export default function PDFUpload() {}
+// export function PDFUpload() {
+//   const [isLoading, setLoading] = useState(false);
+//   const [message, setMessage] = useState<{
+//     type: "error" | "success";
+//     text: string;
+//   } | null>(null);
+
+//   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+
+//     setLoading(true);
+//     setMessage(null);
+
+//     try{
+//       const formData = new FormData();
+//       formData.append("pdf", file);
+
+//       const result = await processPdfFile(formData);  
+
+//       if(result.success) {
+//         setMessage({
+//           type: "success",
+//           text: result.message || "PDF processed successfully."
+//         });
+//         e.target.value = "";
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: result.error || "An error occurred while processing the PDF."
+//         })
+//       }
+//     }catch(error){
+//       setMessage({
+//         type: "error",
+//         text: "Failed to upload and process the PDF file."
+//       })
+//     } finally {
+//       setLoading(false);
+//     }
+//   }
+// }
 
 const InputDemo = () => {
   const [text, setText] = useState<string>("");
@@ -235,10 +201,11 @@ const InputDemo = () => {
           <PromptInputFooter>
             <PromptInputTools>
               <PromptInputActionMenu>
+                {/* <PDFUpload /> */}
                 <PromptInputActionMenuTrigger />
                 <PromptInputActionMenuContent>
                   <PromptInputActionAddAttachments />
-                  {/* <PromptInputActionAddScreenshot /> */}
+                  <PromptInputActionAddScreenshot />
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
               {/* <PromptInputButton

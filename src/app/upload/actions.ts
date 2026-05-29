@@ -1,6 +1,6 @@
 "use server"
 
-import pdf from "pdf-parse";
+// load pdf-parse dynamically to support both ESM and CJS package builds
 import { chunkContent } from "@/lib/chunking";
 import { db } from "@/lib/db-config";
 import { documents } from "@/lib/db-schema";
@@ -13,7 +13,28 @@ export async function processPdfFile(formData: FormData) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const data = await pdf(buffer);
+    const pdfModule = await import("pdf-parse");
+    // pdf-parse v2 exports a `PDFParse` class (ESM) or a callable in older builds.
+    const PDFParseClass: any = (pdfModule as any).PDFParse ?? (pdfModule as any).default ?? (pdfModule as any);
+    let data: any;
+    if (typeof PDFParseClass === "function") {
+      // If it's a class, instantiate and call getText()
+      const parser = new PDFParseClass({ data: buffer });
+      const textResult = await parser.getText();
+      // Normalize result to previous pdf-parse output shape
+      data = {
+        numpages: textResult.total,
+        numrender: 0,
+        info: {},
+        metadata: {},
+        version: undefined,
+        text: textResult.text,
+      };
+    } else {
+      // Fallback: call as function if possible
+      const pdfFn: any = pdfModule as any;
+      data = await pdfFn(buffer);
+    }
 
     if(!data.text || data.text.trim().length === 0) {
       return {
